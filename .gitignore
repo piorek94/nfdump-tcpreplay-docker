@@ -1,0 +1,17 @@
+# local files
+local/
+
+# pcap files
+# Ignore everything in pcaps directory
+pcaps/*
+# Except this file
+!pcaps/example.pcap
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/

@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+  mynfdump:
+    build:
+      context: nfdump
+      args:
+        - NFDUMP_VERSION=unicorn
+    restart: unless-stopped
+    container_name: "mynfdump"
+    mac_address: 8a:ca:58:b9:e9:52
+    networks:
+      mynetwork:
+        ipv4_address: 10.101.48.2
+    environment:
+      - NF_VIRT_MEM_LIMIT=3000000
+      - NFEXPIRE=on
+      - NFEXPIRE_TIME=2H
+    volumes:
+      - type: volume
+        source: nfdump_data
+        target: /data
+    command: ["nfcapd","-p","10000","-l",".","-t","10","-B","250000","-e"]
+  mytcpreplay:
+    build: ./tcpreplay
+    restart: unless-stopped
+    container_name: "mytcpreplay"
+    mac_address: 8a:ca:58:b9:e9:53
+    networks:
+      mynetwork:
+        ipv4_address: 10.101.48.3
+    volumes:
+      - type: bind
+        source: ./pcaps/example.pcap
+        target: /data/example.pcap
+    command: ["tcpreplay", "--quiet", "--preload-pcap", "--loop=0", "--intf1=eth0", "example.pcap"]
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 20M
+    memswap_limit: 100M
+
+networks:
+  mynetwork:
+    driver: bridge
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.101.48.0/29
+          gateway: 10.101.48.1
+
+volumes:
+  nfdump_data:
+    name: "nfdump_data"
