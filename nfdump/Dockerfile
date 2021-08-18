@@ -5,6 +5,7 @@ ENV NFDUMP_DATA_DIR "/data"
 
 ARG NFDUMP_VERSION=master
 ARG NFDUMP_BASE_URL=https://github.com/phaag/nfdump/archive
+ARG NFDUMP_CC
 
 RUN apt-get update && \
     apt-get install -y wget unzip apt-utils make pkg-config libtool autoconf autogen bison byacc flex libbz2-dev libpcap-dev clang && \
@@ -12,7 +13,7 @@ RUN apt-get update && \
     unzip $NFDUMP_VERSION.zip -d /usr/src/ && \
     cd /usr/src/nfdump-$NFDUMP_VERSION && \
     ./autogen.sh && \
-    ./configure --enable-sflow && \
+    env CC=$NFDUMP_CC ./configure --enable-sflow && \
     make && \
     make install && \
     ldconfig && \

@@ -45,6 +45,10 @@ code of nfdump, ex:
 ```
 $ docker build --build-arg NFDUMP_BASE_URL=https://github.com/piorek94/nfdump/archive -t nfdump_img ./nfdump
 ```
+The default C compiler is `clang`, it can be changed to `gcc` by:
+```
+$ docker build --build-arg NFDUMP_CC=gcc -t nfdump_img ./nfdump
+```
 
 ### Running the container
 
