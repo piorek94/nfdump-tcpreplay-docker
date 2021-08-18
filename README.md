@@ -34,11 +34,16 @@ Base image is `debian:stretch`.
 $ docker build -t nfdump_img ./nfdump
 ```
 
-Built image will usemaster branch of nfdump from default. It can be changed by
+Built image will use master branch of nfdump from default. It can be changed by
 build-time variable `NFDUMP_VERSION`.
 Example: build image using `unicorn` branch:
 ```
 $ docker build --build-arg NFDUMP_VERSION=unicorn -t nfdump_img ./nfdump
+```
+There is also possibility to change repository which should be used as source 
+code of nfdump, ex:
+```
+$ docker build --build-arg NFDUMP_BASE_URL=https://github.com/piorek94/nfdump/archive -t nfdump_img ./nfdump
 ```
 
 ### Running the container
