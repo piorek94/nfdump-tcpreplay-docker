@@ -3,17 +3,20 @@ FROM debian:stretch
 ENV DEBIAN_FRONTEND noninteractive
 ENV NFDUMP_DATA_DIR "/data"
 
+ARG NFDUMP_GIT_URL=https://github.com/phaag/nfdump/archive
 ARG NFDUMP_VERSION=master
-ARG NFDUMP_BASE_URL=https://github.com/phaag/nfdump/archive
 ARG NFDUMP_CC
+ARG NFDUMP_CFLAGS
+ARG NFDUMP_OPTS
+ARG NFDUMP_ADD_PGK
 
 RUN apt-get update && \
-    apt-get install -y wget unzip apt-utils make pkg-config libtool autoconf autogen bison byacc flex libbz2-dev libpcap-dev clang && \
-    wget $NFDUMP_BASE_URL/$NFDUMP_VERSION.zip && \
+    apt-get install -y wget unzip apt-utils make pkg-config libtool autoconf autogen bison byacc flex libbz2-dev libpcap-dev clang $NFDUMP_ADD_PGK && \
+    wget $NFDUMP_GIT_URL/$NFDUMP_VERSION.zip && \
     unzip $NFDUMP_VERSION.zip -d /usr/src/ && \
     cd /usr/src/nfdump-$NFDUMP_VERSION && \
     ./autogen.sh && \
-    env CC=$NFDUMP_CC ./configure --enable-sflow && \
+    env CC=$NFDUMP_CC ./configure CFLAGS="$NFDUMP_CFLAGS" $NFDUMP_OPTS && \
     make && \
     make install && \
     ldconfig && \

@@ -34,20 +34,45 @@ Base image is `debian:stretch`.
 $ docker build -t nfdump_img ./nfdump
 ```
 
-Built image will use master branch of nfdump from default. It can be changed by
-build-time variable `NFDUMP_VERSION`.
-Example: build image using `unicorn` branch:
+#### Build-time variables
+
+There are couple variables that user can pass at buil-time using `--build-arg`
+flag:
+
+| Variable         | Default                                 | Description                                              |
+|------------------|-----------------------------------------|----------------------------------------------------------|
+| `NFDUMP_GIT_URL` | https://github.com/phaag/nfdump/archive | nfdump git repository URL (note '/archive' at the end)   |
+| `NFDUMP_VERSION` | master                                  | nfdump version (could be branch name or tag)             |
+| `NFDUMP_CC`      | n/a                                     | compiler used during building nfdump                     |
+| `NFDUMP_CFLAGS`  | n/a                                     | additional C compiler flags                              |
+| `NFDUMP_OPTS`    | n/a                                     | nfdump configure options                                 |
+| `NFDUMP_ADD_PGK` | n/a                                     | additional packages installed via debian package manager |
+
+**Examples**:
+
+* Use `unicorn` branch:
 ```
 $ docker build --build-arg NFDUMP_VERSION=unicorn -t nfdump_img ./nfdump
 ```
-There is also possibility to change repository which should be used as source 
-code of nfdump, ex:
+* Change repository:
 ```
-$ docker build --build-arg NFDUMP_BASE_URL=https://github.com/piorek94/nfdump/archive -t nfdump_img ./nfdump
+$ docker build --build-arg NFDUMP_GIT_URL=https://github.com/piorek94/nfdump/archive -t nfdump_img ./nfdump
 ```
-The default C compiler is `clang`, it can be changed to `gcc` by:
+* Set compiler to `gcc` by:
 ```
 $ docker build --build-arg NFDUMP_CC=gcc -t nfdump_img ./nfdump
+```
+* Set compiler flags:
+```
+$ docker build --build-arg NFDUMP_CFLAGS=-fsanitize=address -t nfdump_img ./nfdump
+```
+* Set nfdump configure options:
+```
+$ docker build --build-arg NFDUMP_OPTS=--enable-sflow -t nfdump_img ./nfdump
+```
+* Request additional packages:
+```
+$ docker build --build-arg NFDUMP_ADD_PGK=curl -t nfdump_img ./nfdump
 ```
 
 ### Running the container
@@ -98,7 +123,7 @@ executing any scripts:
 
 ### Base Image
 
-Base image is `debian:stretch`.
+Base image is `phusion/baseimage:focal-1.0.0`.
 
 ### Building the image
 
@@ -108,7 +133,7 @@ $ docker build -t tcpreplay_img ./tcpreplay
 
 ### Running the container
 
-The Tcpreplay image searches for pcap files under `/data` directory (which is
+Tcpreplay image searches for pcap files under `/data` directory (which is
 also working directory). Pcap files must be mounted inside of that directory.
 A typical invocation of the container might be:
 ```
