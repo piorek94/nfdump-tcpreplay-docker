@@ -1,6 +1,9 @@
 # local files
 local/
 
+# custom docker compose file
+docker-compose.override.yml
+
 # pcap files
 # Ignore everything in pcaps directory
 pcaps/*
